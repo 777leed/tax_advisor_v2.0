@@ -8,8 +8,8 @@ const {
 const { ChatOpenAI, OpenAIEmbeddings } = require("@langchain/openai") ;
 const { RunnableSequence } = require("@langchain/core/runnables");
 
-const OPENAI_API_KEY = '<>';
-const PINECONE_API_KEY = '<>';
+const OPENAI_API_KEY = 'sk-proj-ztq2a5gq2wZsO1rzjBHYT3BlbkFJTSXxXEIM91auDfxTh18R';
+const PINECONE_API_KEY = '03b2e5e7-8130-4e6d-8d22-a69eeee55f28';
 const PINECONE_INDEX = 'docs-rag-chatbot';
 
 const pinecone = new Pinecone({ apiKey: PINECONE_API_KEY });
@@ -71,9 +71,14 @@ async function chatbot(req, res) {
             throw new Error("No config");
           }
           const { configurable } = config;
-          return JSON.stringify(
-            await vectorStore.asRetriever(configurable).getRelevantDocuments(input)
-          );
+          const cx = await vectorStore.asRetriever(configurable).getRelevantDocuments(input);
+          const cxf = cx.map(doc => `-${doc.pageContent}`).join('\n');
+          
+          // Remove sequences of dots
+          const cleanedOutput = cxf.replace(/\.\n+/g, ' ').replace(/\.\s+/g, ' ');
+          
+          
+          return cxf
         },
         question: new RunnablePassthrough(),
       },
@@ -92,14 +97,14 @@ async function chatbot(req, res) {
   const historyString = chatHistory.map(entry => `user: ${entry.question}\nyou: ${entry.answer}`).join('\n');
   template = `
   ${persona}
-  Answer the question based only on the following context:
+  Answer the user based only on the following knowledge base retrieved using RAG, but only when it makes sense with the question:
   {context}
   chat history :
   ${historyString}   
-  Question: {question}
+  User input: {question}
   `;  
 
-
+  
     res.json(result);
   } catch (error) {
     console.error(error);
