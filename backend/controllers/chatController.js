@@ -8,8 +8,8 @@ const {
 const { ChatOpenAI, OpenAIEmbeddings } = require("@langchain/openai") ;
 const { RunnableSequence } = require("@langchain/core/runnables");
 
-const OPENAI_API_KEY = '';
-const PINECONE_API_KEY = '';
+const OPENAI_API_KEY = 'sk-proj-ztq2a5gq2wZsO1rzjBHYT3BlbkFJTSXxXEIM91auDfxTh18R';
+const PINECONE_API_KEY = '03b2e5e7-8130-4e6d-8d22-a69eeee55f28';
 const PINECONE_INDEX = 'docs-rag-chatbot';
 
 const pinecone = new Pinecone({ apiKey: PINECONE_API_KEY });

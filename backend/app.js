@@ -7,7 +7,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3001' // Replace with your frontend origin
+  origin: 'http://localhost:3000' // Replace with your frontend origin
 }));app.use(express.json());
 
 app.use('/api/chat', chatRoutes);
